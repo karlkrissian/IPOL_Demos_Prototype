@@ -1,0 +1,219 @@
+
+<h1>{{demo.title}}</h1>
+
+<p><label>Authors:</label> {{demo.authors}}</p>
+<p><label>Category:</label> {{demo.topic}}</p>
+<p><label>Abstract:</label> {{demo.description}}</p>
+
+<hr>
+<!-- image selection -->
+
+<h3>
+<input  id="DataVisibleCheckbox" type="checkbox" 
+        ng-model="InputTestImagesVisible"  
+        ng-init="InputTestImagesVisible=true" >
+Data
+</h3> 
+
+<div ng-controller="ImagePickerCtrl">
+
+  <div  ng-show="InputTestImagesVisible" style="max-height:30em; overflow:auto;" >
+    <h3> Test Images </h3>
+
+    <form name="ThumbnailSizeForm">
+      <label>Thumbnail size (in pixels)</label>
+      <select ng-options="ThumbnailSize for ThumbnailSize in ['64', '128', '192', '256']" 
+              ng-model="ThumbnailSize" 
+              ng-init="ThumbnailSize='192'">
+      </select>
+    </form>
+
+    <div ng-repeat="image in demo.test_images">
+      <div style='float:left; 
+                  height:{{ThumbnailSize}}px; 
+                  width: {{ThumbnailSize}}px; 
+                  text-align:center; vertical-align:middle;'>
+        <img  
+              ng-src="img/demos/{{demo.id}}/{{image}}.png"
+              style="padding-top:5px; padding-bottom:5px; padding-right:5px; padding-left:5px;max-width:{{ThumbnailSize}}px;max-height:{{ThumbnailSize}}px;width:auto;height:auto;vertical-align:middle;"
+              alt={{image}}
+              ng-click="selectImage(image)" 
+              ng-class="{'selected-image': (selected_image === image)}"
+              />
+        <p>{{image}}</p>
+      </div>
+    </div>
+  </div>  
+
+  <div  ng-show="InputTestImagesVisible" style="max-height:30em; overflow:auto;" >
+    <h3> Downloaded Images </h3>
+
+    <div ng-controller="FileUploadCtrl">
+    <div class="up-buttons">
+      <button ngf-select="" ng-model="files" ngf-multiple="true" ngf-accept="'*.jpg,*.png'" ngfMaxSize=2000000 >Attach An Image
+      </button>
+    </div>
+    </div>
+
+    <div ng-repeat="image in uploaded_images">
+      <div style='float:left; 
+                  height:{{ThumbnailSize}}px; 
+                  width: {{ThumbnailSize}}px; 
+                  text-align:center; vertical-align:middle;'>
+        <img  
+              ng-src="img/demos/{{demo.id}}/uploaded/{{image}}"
+              style="padding-top:5px; padding-bottom:5px; padding-right:5px; padding-left:5px;max-width:{{ThumbnailSize}}px;max-height:{{ThumbnailSize}}px;width:auto;height:auto;vertical-align:middle;"
+              alt={{image}}
+              ng-click="selectImage(image)" 
+              ng-class="{'selected-image': (selected_image === image)}"
+              />
+        <p>{{image}}</p>
+      </div>
+    </div>
+  </div>  
+
+    <!--     <fieldset> -->
+    <!--      <legend>Upload right away</legend>
+          <div class="up-buttons">-->
+    <!--        <div ngf-select="" ng-model="files" class="upload-button" ngf-multiple="false" ngf-accept="'*.pdf,*.jpg,*.png'" ng-model-rejected="rejFiles" tabindex="0">Attach an Image or PDF
+            </div>
+            <br>-->
+    <!--        <button ngf-select="" ng-model="files" ngf-multiple="true" ngf-accept="'*.jpg,*.png'" >Attach An Image
+            </button>
+          </div>-->
+    <!--      <div ngf-drop="" ngf-select="" ng-model="files" ng-model-rejected="rejFiles" ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" class="drop-box" ngf-multiple="true" ngf-allow-dir="true" ngf-accept="'image/*,application/pdf'" ngf-drop-available="dropAvailable">
+            <div ng-hide="dropAvailable">File Drop not available</div>
+            <div ng-show="dropAvailable">Drop Images or PDFs</div>
+            <div>click to select</div>
+          </div>-->
+    <!--     </fieldset> -->
+
+  <div style='height:572px; 
+              width: 544px; 
+              vertical-align:middle;
+              margin-left:auto; margin-right: auto;
+              text-align:center'>
+
+    <div ng-controller="ImgCropCtrl" > 
+    <table style='width:100%; height:100%;'>
+      <td style='vertical-align:middle'>
+        <input  id="ID_InputCropped" type="checkbox" 
+                ng-model="InputCropped"  
+                ng-init="InputCropped=false" 
+                ng-click="go()"
+                alt="Crop"
+                > Enable Crop <br>
+        <label> Selected Image is: </label> 
+        <div>
+          <div ng-hide="InputCropped" >
+            <img 
+                  ng-src="{{selected_image_link}}"
+                  style="padding-top:5px; padding-bottom:5px; padding-right:5px; padding-left:5px;max-width:512px;max-height:512px;width:auto;height:auto;"
+                  alt={{selected_image}}
+                  />
+          </div>
+        </div>
+        <div ng-show="InputCropped" >
+          <div class="cropArea"
+                style="width:512px;height:512px;">
+              <img-crop  
+                  image="myImage"
+                  result-image="myCroppedImage"
+                  change-on-fly="true"
+                  area-type="{{type}}"
+                  area-coords="myAreaCoords"
+                  />
+              </img-crop>
+          </div>
+        </div>
+        <p>{{selected_image}}</p>
+
+      </td>
+      <td style='vertical-align:middle'>
+        <div ng-show="InputCropped" >
+          <img ng-src="{{myCroppedImage}}" width="{{myAreaCoords.w}}" height="{{myAreaCoords.h}}" />
+        </div>
+      </td>
+    </table>
+    </div>
+
+
+  </div>
+
+    
+<!--  <form action="http://demo.ipol.im/demo/106/input_upload" method="post"
+        enctype="multipart/form-data">
+    <div class="action" style='float:left;'>
+      <label>Upload Image</label>
+      <div class="upload_input" style='float:left;'>
+        <label for="file_0"> input image </label>
+        <input type="file" name="file_0" id="file_0" size="40" />&nbsp;
+        <input type="submit" value="upload" />
+      </div>
+      <p class="note">
+        Images larger than 1024000 pixels will be resized.
+        Upload size is limited to 5MB per image file
+        .
+        <br />
+        TIFF, JPEG, PNG, GIF, PNM (and 
+        <a href="https://tools.ipol.im/wiki/ref/demo_input/">other standard formats</a>)
+        are supported.
+        The uploaded will be publicly archived unless you switch to
+        private mode on the result page.
+        <br />
+        Only upload
+        <a href="https://tools.ipol.im/wiki/ref/demo_input/">suitable images</a>.
+        See <a href="https://tools.ipol.im/wiki/ref/demo_input/">the copyright
+    and legal conditions</a> for details.
+      </p>
+    </div>
+  </form>-->
+
+
+
+</div>
+
+
+<hr>
+<!-- parameter selection -->
+
+<h3>
+<input  id="ParametersVisibleCheckbox"
+        type="checkbox" 
+        ng-model="InputParamsVisible" 
+        ng-init="InputParamsVisible=true"  >
+Parameters 
+</h3>
+
+<div ng-show="InputParamsVisible">
+
+  <table  style="width:95%">
+    <tr ng-repeat="param in demo.params">
+      <td>
+          <label for="time">  {{param.label}}  </label>
+      </td>
+      <td>
+          <input  type="number" 
+                  min={{param.min}} max={{param.max}} step={{param.step}} 
+                  value={{param.val}} ng-model="param.val" />
+      </td>
+      <td  style="width:60%">
+          <input  type="range"  
+                  min={{param.min}} max={{param.max}} step={{param.step}} 
+                  value={{param.val}} ng-model="param.val" floatsaving />
+      </td>
+    </tr>
+  </table>
+</div>
+
+<hr>
+<!-- Run -->
+
+<h3>Run</h3> 
+<p>
+
+<hr>
+<!-- Results -->
+
+<h3>Results</h3> 
+<p>
