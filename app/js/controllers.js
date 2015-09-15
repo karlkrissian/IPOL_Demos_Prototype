@@ -11,16 +11,22 @@ IPOLDemoControllers.controller('DemoListCtrl', ['$scope', 'Demo',
   }]);
 
 IPOLDemoControllers.controller('DemoDetailCtrl', 
-                              ['$scope', '$routeParams', 'Demo',
-    function($scope, $routeParams, Demo) {
+                              ['$scope', '$routeParams', 'Demo', 'DemoBlobs',
+    function($scope, $routeParams, Demo, DemoBlobs
+    ) {
       $scope.demo = Demo.get(
          {
-            demoId: $routeParams.demoId}, 
+            demoId: $routeParams.demoId }, 
             function(demo) {
               $scope.mainImageUrl = "";
             }
          );
 
+       $scope.demoblobs = DemoBlobs.get(
+          {
+             demoId: $routeParams.demoId }
+          );
+      
       $scope.uploaded_images = [];
       
       $scope.setImage = function(imageUrl) {
@@ -38,13 +44,18 @@ IPOLDemoControllers.controller('DemoDetailCtrl',
           }
           
           
-          if ($scope.selected_image.indexOf('.png') > -1) {
-            $scope.selected_image_link = 'img/demos/' + $scope.demo.id + 
-                                            '/uploaded/' +
-                                            $scope.selected_image;
+          if (typeof $scope.selected_image === "object") {
+              $scope.selected_image_link = 'http://localhost:7777/blob_directory/'+ 
+                $scope.selected_image.hash + $scope.selected_image.extension;
           } else {
-            $scope.selected_image_link = 'img/demos/' + $scope.demo.id + '/' + 
-                                            $scope.selected_image+'.png';
+            if ($scope.selected_image.indexOf('.png') > -1) {
+              $scope.selected_image_link = 'img/demos/' + $scope.demo.id + 
+                                              '/uploaded/' +
+                                              $scope.selected_image;
+            } else {
+              $scope.selected_image_link = 'img/demos/' + $scope.demo.id + '/' + 
+                                              $scope.selected_image+'.png';
+            }
           }
         }
       }
