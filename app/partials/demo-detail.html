@@ -28,7 +28,7 @@ Data
       </select>
     </form>
 
-    <div ng-repeat="image in demo.test_images">
+<!--    <div ng-repeat="image in demo.test_images">
       <div style='float:left; 
                   height:{{ThumbnailSize}}px; 
                   width: {{ThumbnailSize}}px; 
@@ -42,7 +42,24 @@ Data
               />
         <p>{{image}}</p>
       </div>
+    </div>-->
+
+    <div ng-repeat="blob in demoblobs.blobs">
+      <div style='float:left; 
+                  height:{{ThumbnailSize}}px; 
+                  width: {{ThumbnailSize}}px; 
+                  text-align:center; vertical-align:middle;'>
+        <img  
+              ng-src="http://localhost:7777/thumbnail/thumbnail_{{blob.hash}}{{blob.extension}}"
+              style="padding-top:5px; padding-bottom:5px; padding-right:5px; padding-left:5px;max-width:{{ThumbnailSize}}px;max-height:{{ThumbnailSize}}px;width:auto;height:auto;vertical-align:middle;"
+              alt={{blob.title}}
+              ng-click="selectImage(blob)" 
+              ng-class="{'selected-image': (selected_image === blob)}"
+              />
+        <p>{{blob.title}}</p>
+      </div>
     </div>
+
   </div>  
 
   <div  ng-show="InputTestImagesVisible" style="max-height:30em; overflow:auto;" >
@@ -104,19 +121,12 @@ Data
                 alt="Crop"
                 > Enable Crop <br>
         <label> Selected Image is: </label> 
-        <div>
-          <div ng-hide="InputCropped" >
-            <img 
-                  ng-src="{{selected_image_link}}"
-                  style="padding-top:5px; padding-bottom:5px; padding-right:5px; padding-left:5px;max-width:512px;max-height:512px;width:auto;height:auto;"
-                  alt={{selected_image}}
-                  />
-          </div>
-        </div>
-        <div ng-show="InputCropped" >
+         <div ng-show="InputCropped" > 
           <div class="cropArea"
                 style="width:512px;height:512px;">
               <img-crop  
+                  style="width:512px;height:512px;"
+                  crossOrigin="Anonymous"
                   image="myImage"
                   result-image="myCroppedImage"
                   change-on-fly="true"
@@ -126,12 +136,21 @@ Data
               </img-crop>
           </div>
         </div>
+        <div>
+          <div ng-hide="InputCropped" >
+            <img  crossOrigin="Anonymous"
+                  ng-src="{{selected_image_link}}"
+                  style="padding-top:5px; padding-bottom:5px; padding-right:5px; padding-left:5px;max-width:512px;max-height:512px;width:auto;height:auto;"
+                  alt={{selected_image}}
+                  />
+          </div>
+        </div>
         <p>{{selected_image}}</p>
 
       </td>
       <td style='vertical-align:middle'>
         <div ng-show="InputCropped" >
-          <img ng-src="{{myCroppedImage}}" width="{{myAreaCoords.w}}" height="{{myAreaCoords.h}}" />
+          <img crossOrigin="Anonymous" ng-src="{{myCroppedImage}}" width="{{myAreaCoords.w*2}}" height="{{myAreaCoords.h*2}}" />
         </div>
       </td>
     </table>
